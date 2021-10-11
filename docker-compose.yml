@@ -1,0 +1,11 @@
+version: '2'
+services:
+  blog:
+    image: derchef/ghost:latest
+    ports:
+    - "2368:2368"
+    volumes:
+    - ghost-content:/var/lib/ghost/content
+
+volumes:
+  ghost-content:
