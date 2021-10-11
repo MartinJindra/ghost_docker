@@ -64,8 +64,6 @@ FROM node:14
 
 ersetzt, dadurch ist das Image größer, aber es inkludiert mehr Tools. 
 
-Ein vorgebautes Image kann man von `docker.io` herunterladen.
-
 Um schlussendlich das Image zu bauen, ersetze <name> mit dem Namen, den du vergeben willst und führe aus:
 
 ```bash
