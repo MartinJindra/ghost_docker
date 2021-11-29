@@ -1,15 +1,27 @@
 version: '2'
 services:
   blog:
-    image: derchef/ghost:latest
+    build: .
+    image: pref_ghost
     container_name: pref_ghost
     ports:
     - "2368:2368"
-    - "2369:2369"
     environment:
-    - url=http://localhost/pref
+    - url=http://localhost
     volumes:
-    - ghost-content:/var/lib/ghost/content
+    - ghost:/var/lib/ghost/
+    - home:/home
+
+  ssh:
+    image: pref_ghost
+    container_name: pref_ssh
+    ports:
+    - "2369:22"
+    command: /usr/sbin/sshd -D
+    volumes:
+    - ghost:/var/lib/ghost
+    - home:/home
 
 volumes:
-  ghost-content:
+  ghost:
+  home:
