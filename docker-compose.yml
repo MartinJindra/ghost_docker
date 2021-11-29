@@ -4,7 +4,7 @@ services:
     image: derchef/ghost:latest
     ports:
     - "2368:2368"
-    - "2369:22"
+    - "2369:2369"
     environment:
     - url=http://localhost/pref
     volumes:
