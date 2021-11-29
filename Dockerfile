@@ -92,13 +92,11 @@ RUN set -eux; \
 	npm cache clean --force; \
 	rm -rv /tmp/yarn* /tmp/v8*
 
-RUN apt update && apt install  openssh-server sudo nmap neovim htop -y
-
-RUN useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex && echo 'alex:alex' | chpasswd
-
-RUN sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config
-
-RUN service ssh restart
+RUN set -eux; \
+	apt update && apt install  openssh-server sudo nmap neovim htop -y; \
+	useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex && echo 'alex:alex' | chpasswd; \
+	sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config; \
+	service ssh restart
 
 WORKDIR $GHOST_INSTALL
 VOLUME $GHOST_CONTENT
