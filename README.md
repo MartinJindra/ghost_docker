@@ -1,4 +1,4 @@
-# derchef/ghost
+# Ghost with Node based on Debian 11
 
 ## Vorhandene Images
 
@@ -17,3 +17,5 @@ Um den Container auszuführen nutze ich `docker-compose`.
 ```bash
 docker-compose up -d
 ```
+
+[Github Repo](https://github.com/MartinJindra/ghost_docker)
