@@ -5,7 +5,7 @@
 Downloaden eines vorgebaute Image.
 
 ```bash
-docker pull derchef/ghost
+docker pull derchef/pref_ghost
 ```
 
 Dieses Image basiert auf `node:14-buster`.

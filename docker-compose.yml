@@ -1,19 +1,18 @@
 version: '2'
 services:
   blog:
-    build: .
-    image: pref_ghost
+    image: derchef/ghost
     container_name: pref_ghost
     ports:
     - "2368:2368"
     environment:
-    - url=http://localhost
+    - url=http://localhost/pref
     volumes:
     - ghost:/var/lib/ghost/
     - home:/home
 
   ssh:
-    image: pref_ghost
+    image: derchef/ghost
     container_name: pref_ssh
     ports:
     - "2369:22"
