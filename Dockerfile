@@ -1,7 +1,7 @@
 # https://docs.ghost.org/faq/node-versions/
 # https://github.com/nodejs/Release (looking for "LTS")
 # https://github.com/TryGhost/Ghost/blob/v4.1.2/package.json#L38
-FROM node:14
+FROM node:14-bullseye
 
 # grab gosu for easy step-down from root
 # https://github.com/tianon/gosu/releases
@@ -92,11 +92,23 @@ RUN set -eux; \
 	npm cache clean --force; \
 	rm -rv /tmp/yarn* /tmp/v8*
 
+RUN apt update && apt install  openssh-server sudo nmap neovim htop -y
+
+RUN useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex 
+
+RUN  echo 'alex:alex' | chpasswd
+
+RUN sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config
+
+RUN service ssh start
+
+CMD ["/usr/sbin/sshd","-D"]
+
 WORKDIR $GHOST_INSTALL
 VOLUME $GHOST_CONTENT
 
 COPY docker-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-EXPOSE 2368
+EXPOSE 2368 2369
 CMD ["node", "current/index.js"]
