@@ -93,7 +93,7 @@ RUN set -eux; \
 	rm -rv /tmp/yarn* /tmp/v8*
 
 RUN set -eux; \
-	apt update && apt install  openssh-server sudo nmap neovim htop -y; \
+	apt update && apt install -y openssh-server sudo; \
 	useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex && echo 'alex:alex' | chpasswd; \
 	sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config; \
 	service ssh restart
