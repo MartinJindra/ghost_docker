@@ -14,6 +14,8 @@ services:
   ssh:
     image: derchef/ghost
     container_name: pref_ssh
+    depends_on:
+    - blog
     ports:
     - "2369:22"
     command: /usr/sbin/sshd -D
