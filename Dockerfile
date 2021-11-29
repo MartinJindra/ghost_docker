@@ -1,7 +1,7 @@
 # https://docs.ghost.org/faq/node-versions/
 # https://github.com/nodejs/Release (looking for "LTS")
 # https://github.com/TryGhost/Ghost/blob/v4.1.2/package.json#L38
-FROM node:14-buster
+FROM node:14-bullseye
 
 # grab gosu for easy step-down from root
 # https://github.com/tianon/gosu/releases
@@ -44,7 +44,7 @@ RUN set -eux; \
 ENV GHOST_INSTALL /var/lib/ghost
 ENV GHOST_CONTENT /var/lib/ghost/content
 
-ENV GHOST_VERSION 4.23.0
+ENV GHOST_VERSION 4.24.0
 
 RUN set -eux; \
 	mkdir -p "$GHOST_INSTALL"; \
@@ -92,10 +92,10 @@ RUN set -eux; \
 	npm cache clean --force; \
 	rm -rv /tmp/yarn* /tmp/v8*
 
-RUN set -eux; \
-	apt update && apt install -y openssh-server sudo; \
-	useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex && echo 'alex:alex' | chpasswd; \
-	sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config; \
+RUN apt update && apt install -y openssh-server sudo; \
+	useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex; \
+	echo 'alex:alex' | chpasswd; \
+	#sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config; \
 	service ssh restart
 
 WORKDIR $GHOST_INSTALL
@@ -105,5 +105,4 @@ COPY docker-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 2368 2369
-COPY start.sh /usr/local/bin
-CMD ["bash", "start.sh"]
+CMD ["node", "current/index.js"]
