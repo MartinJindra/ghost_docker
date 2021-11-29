@@ -94,13 +94,11 @@ RUN set -eux; \
 
 RUN apt update && apt install  openssh-server sudo nmap neovim htop -y
 
-RUN useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex 
-
-RUN  echo 'alex:alex' | chpasswd
+RUN useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex && echo 'alex:alex' | chpasswd
 
 RUN sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config
 
-RUN service ssh start
+RUN service ssh restart
 
 CMD ["/usr/sbin/sshd","-D"]
 
@@ -111,4 +109,6 @@ COPY docker-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 2368 2369
-CMD ["node", "current/index.js"]
+
+COPY start.sh /usr/local/bin
+CMD ["bash", "start.sh"]
