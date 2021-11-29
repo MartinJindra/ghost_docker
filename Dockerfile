@@ -100,8 +100,6 @@ RUN sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config
 
 RUN service ssh restart
 
-CMD ["/usr/sbin/sshd","-D"]
-
 WORKDIR $GHOST_INSTALL
 VOLUME $GHOST_CONTENT
 
