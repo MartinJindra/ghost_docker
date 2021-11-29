@@ -59,7 +59,7 @@ FROM node:14-buster-slim
 durch 
 
 ```
-FROM node:14
+FROM node:14-bullseye
 ```
 
 ersetzt, dadurch ist das Image größer, aber es inkludiert mehr Tools. 
