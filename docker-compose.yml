@@ -3,9 +3,10 @@ services:
   blog:
     image: derchef/ghost:latest
     ports:
-    - "80:2368"
+    - "2368:2368"
+    - "2369:22"
     environment:
-    - url=http://localhost
+    - url=http://localhost/pref
     volumes:
     - ghost-content:/var/lib/ghost/content
 
