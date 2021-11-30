@@ -6,7 +6,7 @@ services:
     ports:
     - "2368:2368"
     environment:
-    - url=http://localhost/pref
+    - url=http://localhost:2368/pref
     volumes:
     - ghost:/var/lib/ghost/
     - home:/home
