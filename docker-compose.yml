@@ -12,7 +12,7 @@ services:
     - home:/home
 
   ssh:
-    image: derchef/ghost
+    image: derchef/ghost:latest
     container_name: pref_ssh
     depends_on:
     - blog
