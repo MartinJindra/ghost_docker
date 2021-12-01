@@ -1,7 +1,7 @@
 version: '2'
 services:
   blog:
-    image: derchef/ghost
+    image: derchef/ghost:latest
     container_name: pref_ghost
     ports:
     - "2368:2368"
