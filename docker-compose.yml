@@ -6,7 +6,7 @@ services:
     ports:
     - "2368:2368"
     environment:
-    - url=http://projekte.tgm.ac.at/pref/
+    - url=http://projekte.tgm.ac.at/pref
     volumes:
     - ghost:/var/lib/ghost/
     - home:/home
