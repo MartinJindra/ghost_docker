@@ -44,7 +44,7 @@ RUN set -eux; \
 ENV GHOST_INSTALL /var/lib/ghost
 ENV GHOST_CONTENT /var/lib/ghost/content
 
-ENV GHOST_VERSION 4.24.0
+ENV GHOST_VERSION 4.32.0
 
 RUN set -eux; \
 	mkdir -p "$GHOST_INSTALL"; \
@@ -92,7 +92,7 @@ RUN set -eux; \
 	npm cache clean --force; \
 	rm -rv /tmp/yarn* /tmp/v8*
 
-RUN apt update && apt install -y openssh-server sudo; \
+RUN apt update && apt install -y openssh-server sudo neovim nano micro; \
 	useradd -rm -d /home/alex -s /bin/bash -g root -G sudo alex; \
 	echo 'alex:alex' | chpasswd; \
 	#sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config; \
