@@ -1,17 +1,17 @@
 version: '2'
 services:
-  blog:
+  pref_blog:
     image: derchef/ghost:latest
-    container_name: pref_ghost
+    container_name: pref_blog
     ports:
     - "2368:2368"
     environment:
     - url=http://projekte.tgm.ac.at/pref
     volumes:
-    - ghost:/var/lib/ghost/
+    - ghost:/var/lib/ghost/content
     - home:/home
 
-  ssh:
+  pref_ssh:
     image: derchef/ghost:latest
     container_name: pref_ssh
     depends_on:
@@ -19,10 +19,9 @@ services:
     ports:
     - "2369:22"
     command: /usr/sbin/sshd -D
-    volumes:
-    - ghost:/var/lib/ghost
-    - home:/home
-
+    volumes_from:
+    - pref_blog
+    
 volumes:
   ghost:
   home:
