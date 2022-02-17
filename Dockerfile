@@ -5,7 +5,7 @@ FROM node:14-bullseye
 
 # grab gosu for easy step-down from root
 # https://github.com/tianon/gosu/releases
-ENV GOSU_VERSION 1.12
+ENV GOSU_VERSION 1.14
 RUN set -eux; \
 # save list of currently installed packages for later so we can clean up
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -44,7 +44,7 @@ RUN set -eux; \
 ENV GHOST_INSTALL /var/lib/ghost
 ENV GHOST_CONTENT /var/lib/ghost/content
 
-ENV GHOST_VERSION 4.32.0
+ENV GHOST_VERSION 4.36.1
 
 RUN set -eux; \
 	mkdir -p "$GHOST_INSTALL"; \
