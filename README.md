@@ -14,6 +14,12 @@ Dieses Image basiert auf `node:14-buster`.
 
 `docker-entrypoint.sh` basiert auf [link](https://github.com/docker-library/ghost/blob/master/4/debian/docker-entrypoint.sh).
 
+## Bauen des Containers
+
+```
+docker build . -t derchef/ghost:latest
+```
+
 ## Ausführen des Containers
 
 Um den Container auszuführen nutze ich `docker-compose`.
