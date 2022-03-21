@@ -33,6 +33,7 @@ services:
 
   pref_db:
     image: mysql:8.0
+    container_name: "pref_db"
     restart: always
     volumes:
       - db:/var/lib/mysql
