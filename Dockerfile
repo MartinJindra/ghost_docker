@@ -5,7 +5,7 @@ FROM node:14-bullseye
 
 # grab gosu for easy step-down from root
 # https://github.com/tianon/gosu/releases
-ENV GOSU_VERSION 1.14
+ENV GOSU_VERSION 1.12
 RUN set -eux; \
 # save list of currently installed packages for later so we can clean up
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -36,7 +36,7 @@ RUN set -eux; \
 
 ENV NODE_ENV production
 
-ENV GHOST_CLI_VERSION 1.18.1
+ENV GHOST_CLI_VERSION 1.18.2
 RUN set -eux; \
 	npm install -g "ghost-cli@$GHOST_CLI_VERSION"; \
 	npm cache clean --force
@@ -44,7 +44,7 @@ RUN set -eux; \
 ENV GHOST_INSTALL /var/lib/ghost
 ENV GHOST_CONTENT /var/lib/ghost/content
 
-ENV GHOST_VERSION 4.36.1
+ENV GHOST_VERSION 4.41.0
 
 RUN set -eux; \
 	mkdir -p "$GHOST_INSTALL"; \
@@ -54,7 +54,7 @@ RUN set -eux; \
 	\
 # Tell Ghost to listen on all ips and not prompt for additional configuration
 	cd "$GHOST_INSTALL"; \
-	gosu node ghost config --ip 0.0.0.0 --port 2368 --no-prompt --db sqlite3 --url http://localhost:2368 --dbpath "$GHOST_CONTENT/data/ghost.db"; \
+	gosu node ghost config --ip '::' --port 2368 --no-prompt --db sqlite3 --url http://localhost:2368 --dbpath "$GHOST_CONTENT/data/ghost.db"; \
 	gosu node ghost config paths.contentPath "$GHOST_CONTENT"; \
 	\
 # make a config.json symlink for NODE_ENV=development (and sanity check that it's correct)
@@ -77,10 +77,10 @@ RUN set -eux; \
 # must be some non-amd64 architecture pre-built binaries aren't published for, so let's install some build deps and do-it-all-over-again
 		savedAptMark="$(apt-mark showmanual)"; \
 		apt-get update; \
-		apt-get install -y --no-install-recommends g++ gcc libc-dev libvips-dev make python3; \
+		apt-get install -y --no-install-recommends g++ gcc libc-dev libvips-dev make python2; \
 		rm -rf /var/lib/apt/lists/*; \
 		\
-		npm_config_python='python3' gosu node yarn add "sqlite3@$sqlite3Version" --force --build-from-source --ignore-optional; \
+		npm_config_python='python2' gosu node yarn add "sqlite3@$sqlite3Version" --force --build-from-source --ignore-optional; \
 		\
 		apt-mark showmanual | xargs apt-mark auto > /dev/null; \
 		[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
@@ -98,11 +98,13 @@ RUN apt update && apt install -y openssh-server sudo neovim nano micro; \
 	#sed -i 's/#Port 22/Port 2369/g' /etc/ssh/sshd_config; \
 	service ssh restart
 
+RUN echo 'node:node' | chpasswd
+
 WORKDIR $GHOST_INSTALL
 VOLUME $GHOST_CONTENT
 
 COPY docker-entrypoint.sh /usr/local/bin
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-EXPOSE 2368 2369
+EXPOSE 2368
 CMD ["node", "current/index.js"]
