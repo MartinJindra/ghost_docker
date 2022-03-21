@@ -17,8 +17,8 @@ services:
       database__connection__password: "$MYSQL_PASSWORD"
       database__connection__database: ghost
     volumes:
-      - ghost:/var/lib/ghost/content
-      - home:/home
+      - ./content:/var/lib/ghost/content
+      - ./home:/home
 
   pref_ssh:
     image: derchef/ghost:latest
@@ -40,6 +40,4 @@ services:
       MYSQL_ROOT_PASSWORD: "$MYSQL_PASSWORD"
     
 volumes:
-  ghost:
-  home:
   db:
