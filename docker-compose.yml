@@ -2,9 +2,9 @@ version: '2'
 services:
 
   pref_blog:
-    image: derchef/ghost:latest
-    restart: always
+    image: docker.io/derchef/ghost:latest
     container_name: pref_blog
+    restart: always
     ports:
       - "2368:2368"
     depends_on:
@@ -14,15 +14,16 @@ services:
       database__client: mysql
       database__connection__host: pref_db
       database__connection__user: root
-      database__connection__password: "$MYSQL_PASSWORD"
+      database__connection__password: "${DB_PASSWORD}"
       database__connection__database: ghost
     volumes:
       - ./content:/var/lib/ghost/content
       - ./home:/home
 
   pref_ssh:
-    image: derchef/ghost:latest
+    image: docker.io/derchef/ghost:latest
     container_name: pref_ssh
+    restart: always
     depends_on:
       - pref_blog
     ports:
@@ -32,13 +33,110 @@ services:
       - pref_blog
 
   pref_db:
-    image: mysql:8.0
+    image: docker.io/mysql:8.0
     container_name: "pref_db"
     restart: always
     volumes:
-      - db:/var/lib/mysql
+      - pref_db_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: "$MYSQL_PASSWORD"
-    
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+
+  postgresql:
+    image: docker.io/bitnami/postgresql:13
+    container_name: "pref_discourse_db"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pref_discourse_db_data:/bitnami/postgresql
+    environment:
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_DATABASE: discourse
+      POSTGRESQL_PASSWORD: "${DB_PASSWORD}"
+
+  redis:
+    image: docker.io/bitnami/redis:6.0
+    container_name: "pref_discourse_redis"
+    volumes:
+      - pref_discourse_redis_data:/bitnami/redis
+    environment:
+      REDIS_PASSWORD: "${DB_PASSWORD}"
+
+  discourse:
+    image: docker.io/bitnami/discourse:2
+    container_name: "pref_discourse"
+    restart: always
+    ports:
+      - '80:3000'
+    volumes:
+      - pref_discourse_data:/bitnami/discourse
+    depends_on:
+      - postgresql
+      - redis
+    environment:
+      # Discourse
+      DISCOURSE_USERNAME: "${DISCOURSE_USER}"
+      DISCOURSE_PASSWORD: "${DISCOURSE_PASSWORD}"
+      DISCOURSE_EMAIL: "${DISCOURSE_EMAIL}"
+      DISCOURSE_HOST: "${DISCOURSE_URL}"
+      DISCOURSE_PORT_NUMBER: 3000
+      # DB
+      DISCOURSE_DATABASE_HOST: postgresql
+      DISCOURSE_DATABASE_PORT_NUMBER: 5432
+      DISCOURSE_DATABASE_NAME: discourse
+      DISCOURSE_DATABASE_USER: postgres
+      DISCOURSE_DATABASE_PASSWORD: "${DB_PASSWORD}"
+      # Redis
+      DISCOURSE_REDIS_HOST: redis
+      DISCOURSE_REDIS_PORT_NUMBER: 6379
+      DISCOURSE_REDIS_PASSWORD: "${DB_PASSWORD}"
+      # SMTP
+      # DISCOURSE_SMTP_HOST: "${DISCOURSE_SMTP_HOST}"
+      # DISCOURSE_SMTP_PORT: "${DISCOURSE_SMTP_PORT}"
+      # DISCOURSE_SMTP_USER: "${DISCOURSE_SMTP_USER}"
+      # DISCOURSE_SMTP_PASSWORD: "${DISCOURSE_SMTP_PASSWORD}"
+      # DISCOURSE_SMTP_PROTOCOL: "${DISCOURSE_SMTP_PROTOCOL}"
+      # Postgresl-Client
+      POSTGRESQL_CLIENT_POSTGRES_USER: postgres
+      POSTGRESQL_CLIENT_POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRESQL_CLIENT_CREATE_DATABASE_NAME: bitnami_discourse
+      POSTGRESQL_CLIENT_CREATE_DATABASE_EXTENSIONS: hstore,pg_trgm
+
+  sidekiq:
+    image: docker.io/bitnami/discourse:2
+    container_name: "pref_sidekiq"
+    restart: always
+    depends_on:
+      - discourse
+    volumes:
+      - pref_sidekiq_data:/bitnami/discourse
+    command: /opt/bitnami/scripts/discourse-sidekiq/run.sh
+    environment:
+      # Discourse
+      DISCOURSE_USERNAME: "${DISCOURSE_USER}"
+      DISCOURSE_PASSWORD: "${DISCOURSE_PASSWORD}"
+      DISCOURSE_EMAIL: "${DISCOURSE_EMAIL}"
+      DISCOURSE_HOST: "${DISCOURSE_URL}"
+      DISCOURSE_PORT_NUMBER: 3000
+      # DB
+      DISCOURSE_DATABASE_HOST: postgresql
+      DISCOURSE_DATABASE_PORT_NUMBER: 5432
+      DISCOURSE_DATABASE_NAME: discourse
+      DISCOURSE_DATABASE_USER: postgres
+      DISCOURSE_DATABASE_PASSWORD: "${DB_PASSWORD}"
+      # Redis
+      DISCOURSE_REDIS_HOST: redis
+      DISCOURSE_REDIS_PORT_NUMBER: 6379
+      DISCOURSE_REDIS_PASSWORD: "${DB_PASSWORD}"
+      # SMTP
+      # DISCOURSE_SMTP_HOST: "${DISCOURSE_SMTP_HOST}"
+      # DISCOURSE_SMTP_PORT: "${DISCOURSE_SMTP_PORT}"
+      # DISCOURSE_SMTP_USER: "${DISCOURSE_SMTP_USER}"
+      # DISCOURSE_SMTP_PASSWORD: "${DISCOURSE_SMTP_PASSWORD}"
+      # DISCOURSE_SMTP_PROTOCOL: "${DISCOURSE_SMTP_PROTOCOL}"
+
 volumes:
-  db:
+  pref_discourse_db_data:
+  pref_discourse_redis_data:
+  pref_discourse_data:
+  pref_sidekiq_data:
+  pref_db_data:
