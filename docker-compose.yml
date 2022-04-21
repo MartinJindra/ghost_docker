@@ -1,6 +1,14 @@
 version: '2'
 services:
 
+  redirect:
+    image: morbz/docker-web-redirect
+    container_name: pref_redirect
+    restart: always
+    environment:
+      VIRTUAL_HOST: "${OLD}"
+      REDIRECT_TARGET: "${PREF_URL}"
+
   pref_blog:
     image: docker.io/derchef/ghost:latest
     container_name: pref_blog
@@ -10,7 +18,7 @@ services:
     depends_on:
       - pref_db
     environment:
-      url: "$PREF_URL"
+      url: "${PREF_URL}"
       database__client: mysql
       database__connection__host: pref_db
       database__connection__user: root
@@ -66,7 +74,7 @@ services:
     container_name: "pref_discourse"
     restart: always
     ports:
-      - '80:3000'
+      - '2370:3000'
     volumes:
       - pref_discourse_data:/bitnami/discourse
     depends_on:
@@ -79,6 +87,7 @@ services:
       DISCOURSE_EMAIL: "${DISCOURSE_EMAIL}"
       DISCOURSE_HOST: "${DISCOURSE_URL}"
       DISCOURSE_PORT_NUMBER: 3000
+      DISCOURSE_PRECOMPILE_ASSETS: no
       # DB
       DISCOURSE_DATABASE_HOST: postgresql
       DISCOURSE_DATABASE_PORT_NUMBER: 5432
@@ -90,11 +99,11 @@ services:
       DISCOURSE_REDIS_PORT_NUMBER: 6379
       DISCOURSE_REDIS_PASSWORD: "${DB_PASSWORD}"
       # SMTP
-      # DISCOURSE_SMTP_HOST: "${DISCOURSE_SMTP_HOST}"
-      # DISCOURSE_SMTP_PORT: "${DISCOURSE_SMTP_PORT}"
-      # DISCOURSE_SMTP_USER: "${DISCOURSE_SMTP_USER}"
-      # DISCOURSE_SMTP_PASSWORD: "${DISCOURSE_SMTP_PASSWORD}"
-      # DISCOURSE_SMTP_PROTOCOL: "${DISCOURSE_SMTP_PROTOCOL}"
+      DISCOURSE_SMTP_HOST: "${DISCOURSE_SMTP_HOST}"
+      DISCOURSE_SMTP_PORT: "${DISCOURSE_SMTP_PORT}"
+      DISCOURSE_SMTP_USER: "${DISCOURSE_SMTP_USER}"
+      DISCOURSE_SMTP_PASSWORD: "${DISCOURSE_SMTP_PASSWORD}"
+      DISCOURSE_SMTP_PROTOCOL: "${DISCOURSE_SMTP_PROTOCOL}"
       # Postgresl-Client
       POSTGRESQL_CLIENT_POSTGRES_USER: postgres
       POSTGRESQL_CLIENT_POSTGRES_PASSWORD: "${DB_PASSWORD}"
@@ -117,6 +126,7 @@ services:
       DISCOURSE_EMAIL: "${DISCOURSE_EMAIL}"
       DISCOURSE_HOST: "${DISCOURSE_URL}"
       DISCOURSE_PORT_NUMBER: 3000
+      DISCOURSE_PRECOMPILE_ASSETS: no
       # DB
       DISCOURSE_DATABASE_HOST: postgresql
       DISCOURSE_DATABASE_PORT_NUMBER: 5432
@@ -128,11 +138,11 @@ services:
       DISCOURSE_REDIS_PORT_NUMBER: 6379
       DISCOURSE_REDIS_PASSWORD: "${DB_PASSWORD}"
       # SMTP
-      # DISCOURSE_SMTP_HOST: "${DISCOURSE_SMTP_HOST}"
-      # DISCOURSE_SMTP_PORT: "${DISCOURSE_SMTP_PORT}"
-      # DISCOURSE_SMTP_USER: "${DISCOURSE_SMTP_USER}"
-      # DISCOURSE_SMTP_PASSWORD: "${DISCOURSE_SMTP_PASSWORD}"
-      # DISCOURSE_SMTP_PROTOCOL: "${DISCOURSE_SMTP_PROTOCOL}"
+      DISCOURSE_SMTP_HOST: "${DISCOURSE_SMTP_HOST}"
+      DISCOURSE_SMTP_PORT: "${DISCOURSE_SMTP_PORT}"
+      DISCOURSE_SMTP_USER: "${DISCOURSE_SMTP_USER}"
+      DISCOURSE_SMTP_PASSWORD: "${DISCOURSE_SMTP_PASSWORD}"
+      DISCOURSE_SMTP_PROTOCOL: "${DISCOURSE_SMTP_PROTOCOL}"
 
 volumes:
   pref_discourse_db_data:
