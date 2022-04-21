@@ -28,6 +28,4 @@ Um den Container auszuführen nutze ich `docker-compose`.
 docker-compose up -d
 ```
 
-Es werden 2 Container gestartet (Ghost und SSH).
-
 [Github Repo](https://github.com/MartinJindra/ghost_docker)

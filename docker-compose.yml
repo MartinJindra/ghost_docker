@@ -74,7 +74,7 @@ services:
     container_name: "pref_discourse"
     restart: always
     ports:
-      - '2370:3000'
+      - "${DISCOURSE_PORT}:${DISCOURSE_PORT}"
     volumes:
       - pref_discourse_data:/bitnami/discourse
     depends_on:
@@ -86,7 +86,7 @@ services:
       DISCOURSE_PASSWORD: "${DISCOURSE_PASSWORD}"
       DISCOURSE_EMAIL: "${DISCOURSE_EMAIL}"
       DISCOURSE_HOST: "${DISCOURSE_URL}"
-      DISCOURSE_PORT_NUMBER: 3000
+      DISCOURSE_PORT_NUMBER: "${DISCOURSE_PORT}"
       DISCOURSE_PRECOMPILE_ASSETS: no
       # DB
       DISCOURSE_DATABASE_HOST: postgresql
@@ -125,7 +125,7 @@ services:
       DISCOURSE_PASSWORD: "${DISCOURSE_PASSWORD}"
       DISCOURSE_EMAIL: "${DISCOURSE_EMAIL}"
       DISCOURSE_HOST: "${DISCOURSE_URL}"
-      DISCOURSE_PORT_NUMBER: 3000
+      DISCOURSE_PORT_NUMBER: "${DISCOURSE_PORT}"
       DISCOURSE_PRECOMPILE_ASSETS: no
       # DB
       DISCOURSE_DATABASE_HOST: postgresql
